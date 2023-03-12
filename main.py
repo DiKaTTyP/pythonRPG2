@@ -1,9 +1,12 @@
 import random
 import time
 Classs = ["Маг","Танк"]#,"Лучник","Целитель"]
-Type= ["Огонь","Холод","Яд"]
+TypeMage= ["Огонь","Холод","Яд"]
+TypeTank = ["Площадь","Сильный удар","Колющий удар"]
 atack = ''
 gg = 0
+atk2 = "Не выбрано"
+atk1 = "Не выбрано"
 class RPG():
     def __init__(self,name,Class):
         self.name = name
@@ -14,6 +17,7 @@ class RPG():
             print(f"Персонаж {self.name} создан, класс: {self.Class}.Вывести данные о персонаже?")
 class Mage(RPG):
     def __init__(self,name,Class,HP,DP,punch,atack_type,HP1,DP1,punch1,atack_type1,Class1,gg,person):
+        self.Heal = 5
         self.gg = gg
         self.name = name
         self.Class = Class
@@ -30,36 +34,46 @@ class Mage(RPG):
     def info(self):
         print(f"Имя персонажа: {self.name} Класс персонажа: { self.Class} Здоровье персонажа: {self.HP} Броня персонажа:{ self.DP} Урон персонажа: {self.punch} Тип урона персонажа: {self.atack_type}")
 
-    def Atack(self):
-        if self.atack_type1 == 'Огонь':
+    def Atack(self,atack_type,atack_type1):
+        self.atack_type = atack_type
+        self.atack_type1 = atack_type1
+        if self.atack_type == 'Огонь':
             self.atack = self.punch + 4
         elif self.atack_type1 == 'Холод':
             self.atack = self.punch + 3
-        else:
+        elif self.atack_type == "Яд":
             self.atack = self.punch + 6
+        else:
+            self.atack = self.punch
         if self.Class1 == "Маг":
             if self.atack_type1 == 'Огонь':
                 self.atack1 = self.punch1 + 4
             elif self.atack_type1 == 'Холод':
                 self.atack1 = self.punch1 + 3
-            else:
+            elif self.atack_type1 == "Яд":
                 self.atack1 = self.punch1 + 6
-            if self.person == 1:
-                print(f"Урон противника равен: {self.atack}")
             else:
-                print(f"Ваш урон равен : {self.atack}")
+                self.atack1 = self.punch1
+
         else:
-            self.atack1 = self.punch1
-            if self.person == 1:
-                print(f"Урон противника равен: {self.atack}")
+            if self.atack_type1 == "Площадь":
+                self.atack1 = self.punch1 + 4
+            elif self.atack_type1 == "Сильный удар":
+                self.atack1 = self.punch1 + 8
+            elif self.atack_type1 == "Колющий удар":
+                self.atack1 = self.punch1 + 6
             else:
-                print(f"Ваш урон равен : {self.atack}")
+                self.atack1 = self.punch1
+        if self.person == 1:
+            print(f"Урон противника равен: {self.atack}")
+        else:
+            print(f"Ваш урон равен : {self.atack}")
     def Defence(self):
         if self.person == 1:
             print(f"Здоровье противника равно: {self.HP}")
         else:
             print(f"Ваше здоровье равно: {self.HP}")
-        if self.atack1 <self.DP:
+        if self.atack1 < self.DP:
             print("Персонаж противника слишком слаб, вы забрали все его сокровища")
             self.HP = 0
             self.HP1 = 0
@@ -89,9 +103,31 @@ class Mage(RPG):
                     self.HP = 0
                     self.HP1 = 0
                     self.gg=1
+    def heal(self):
+        if self.person == 2:
+            print(f"{self.name}?, у вас есть {self.Heal} зелий лечения, вы хотите полечиться?")
+            ph = input()
+            if ph == "Да" or ph == "да":
+                self.HP += 50
+                print("Вы подлечились на 50, ваше здоровьбе равно: ",self.HP)
+                self.Heal -=1
+                if self.Heal == 0:
+                    print("Ваши зелья лечения з0акончились")
+            else:
+                self.HP = self.HP
+        if self.person == 1:
+            ph = random.randint(0,9)
+            if ph == 6:
+                self.HP += 50
+                print("Противник подлечился на 50, его здоровьбе равно: ",self.HP)
+                self.Heal -= 1
+
+            else:
+                self.HP = self.HP
 
 class Tank(RPG):
     def __init__(self, name, Class, HP, DP, punch, atack_type, HP1, DP1, punch1, atack_type1, Class1, gg,person):
+        self.Heal = 5
         self.gg = gg
         self.name = name
         self.Class = Class
@@ -109,26 +145,41 @@ class Tank(RPG):
     def info(self):
         print(f"Имя персонажа: {self.name} Класс персонажа: { self.Class} Здоровье персонажа: {self.HP} Броня персонажа:{ self.DP} Урон персонажа: {self.punch} Тип урона персонажа: {self.atack_type}")
 
-    def Atack(self):
-        self.atack = self.punch
-
-        if self.Class1 == 'Маг':
+    def Atack(self,atack_type,atack_type1):
+        self.atack_type = atack_type
+        self.atack_type1 = atack_type1
+        if self.atack_type == "Площадь":
+            self.atack = self.punch + 4
+        elif self.atack_type == "Сильный удар":
+            self.atack = self.punch + 8
+        elif self.atack_type == "Колющий удар":
+            self.atack = self.punch + 6
+        else:
+            self.atack = self.punch
+        if self.Class1 == "Маг":
             if self.atack_type1 == 'Огонь':
                 self.atack1 = self.punch1 + 4
             elif self.atack_type1 == 'Холод':
                 self.atack1 = self.punch1 + 3
+            elif self.atack_type1 == "Яд":
+                self.atack = self.punch + 6
             else:
-                self.atack1 = self.punch1 + 6
-            if self.person == 1:
-                print(f"Урон противника равен: {self.atack}")
-            else:
-                print(f"Ваш урон равен : {self.atack}")
+                self.atack = self.punch
+
         else:
-            self.atack1 =self.punch1
-            if self.person == 1:
-                print(f"Урон противника равен: {self.atack}")
+            if self.atack_type1 == "Площадь":
+                self.atack1 = self.punch1 + 4
+            elif self.atack_type1 == "Сильный удар":
+                self.atack1 = self.punch1 + 8
+            elif self.atack_type1 == "Колющий удар":
+                self.atack1 = self.punch1 + 6
             else:
-                print(f"Ваш урон равен : {self.atack}")
+                self.atack1 = self.punch1
+
+        if self.person == 1:
+            print(f"Урон противника равен: {self.atack}")
+        else:
+            print(f"Ваш урон равен : {self.atack}")
 
 
     def Defence(self):
@@ -166,6 +217,26 @@ class Tank(RPG):
                     self.HP1 = 0
                     self.gg = 1
 
+    def heal(self):
+        if self.person == 2:
+            print(f"{self.name}?, у вас есть {self.Heal} зелий лечения, вы хотите полечиться?")
+            ph = input()
+            if ph == "Да" or ph == "да":
+                self.HP += 50
+                print("Вы подлечились на 50, ваше здоровьбе равно: ",self.HP)
+                self.Heal -=1
+                if self.Heal == 0:
+                    print("Ваши зелья лечения з0акончились")
+            else:
+                self.HP = self.HP
+        if self.person == 1:
+            ph = random.randint(0,9)
+            if ph == 6:
+                self.HP += 50
+                print("Противник подлечился на 50, его здоровьбе равно: ",self.HP)
+                self.Heal -= 1
+            else:
+                self.HP = self.HP
 
 print("Игра против компьютера/ игра с игроком?")
 a=input()
@@ -178,16 +249,18 @@ if a == '1':
         HP1= random.randint(125,250)
         DP1 = random.randint(5,15)
         punch1 = random.randint(25,45)
-        atack_type1 = Type[random.randint(0,len(Type)-1)]
+        atack_type1 = "Не выбрано"
 #   elif b=="":
 
 #    elif b=="":
 
-    else:
+    elif b=="Танк":
         HP1= random.randint(225,400)
         DP1 = random.randint(10,25)
         punch1 = random.randint(15,25)
-        atack_type1 = "Площадь"
+        atack_type1 = "Не выбрано"
+    else:
+        print("Такого класса не существует")
     print(f'Выберите класс персонажа из предложенных:{Classs}')
     c= input()
     if c=="Маг":
@@ -195,7 +268,7 @@ if a == '1':
         HP2= random.randint(125,250)
         DP2 = random.randint(5,15)
         punch2 = random.randint(25,45)
-        atack_type2 = Type[random.randint(0,len(Type)-1)]
+        atack_type2 = "Не выбрано"
 
 #   elif b=="":
 
@@ -206,7 +279,7 @@ if a == '1':
         HP2 = random.randint(225,400)
         DP2 = random.randint(10,25)
         punch2 = random.randint(15,25)
-        atack_type2 = "Площадь"
+        atack_type2 = "Не выбрано"
     else:
         print("Такого класса не существует")
     if b == "Танк":
@@ -224,17 +297,32 @@ if a == '1':
         if j == "Да" or j == "да":
             person2.info()
 print(f"Ваше здоровье равно: {person1.HP1}")
-person1.Atack()
+person1.Atack(atk2,atk1)
 while person1.HP >0 and person2.HP>0:
     if person1.HP <=0 or person2.HP<=0:
         break
+    print(f"{person2.name}, выберите тип атаки")
+    if person1.Class == "Маг":
+        atk1 = TypeMage[random.randint(0,len(TypeMage)-1)]
+    elif person1.Class == "Танк":
+        atk1 = TypeTank[random.randint(0, len(TypeTank) - 1)]
+    if person2.Class == "Маг":
+        print("Огонь/Холод/Яд")
+        atk2 = input()
+    elif person2.Class == "Танк":
+        print("Площадь/Сильный удар/Колющий удар")
+        atk2 = input()
     time.sleep(1)
-    person2.Atack()
+    person2.Atack(atk1,atk2)
+    if person1.Heal != 0:
+        person1.heal()
     person1.Defence()
     if person1.HP <=0 or person2.HP<=0:
         break
     time.sleep(1)
-    person1.Atack()
+    person1.Atack(atk2,atk1)
+    if person2.Heal != 0:
+        person2.heal()
     person2.Defence()
     if person1.HP <=0 or person2.HP<=0:
         break
